@@ -1,0 +1,8 @@
+#!/bin/bash
+
+#Completely remove the OEM Configs User
+deluser oem
+rm -rf /home/oem
+dpkg --purge --force-all oem-config-feren
+apt-get install -y feren-calamares-oem-config
+exit 0
