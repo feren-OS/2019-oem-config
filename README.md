@@ -1,6 +1,9 @@
 # OEM Config Preparation Commands
 OEM Config commands to be used in preparation for OEM Config in Feren OS. Use this in conjunction with <a href=https://github.com/feren-OS/oem-setup-shell>https://github.com/feren-OS/oem-setup-shell</a>.
 
+<h2>Usage:</h2>
+Refer to this tutorial on the oem-setup-shell repository: https://github.com/feren-OS/oem-setup-shell/wiki/Deployment
+
 <h2>Commands:</h2>
 <h4>feren-oem-prepremove</h4>
 Removes the 'oem' user used for preparing customisations for Feren OS before making OEM Config start on the next startup.
