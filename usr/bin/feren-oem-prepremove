@@ -3,6 +3,17 @@
 #Completely remove the OEM Configs User
 deluser oem
 rm -rf /home/oem
+
+#Remove the OEM Config Preparation package, we won't need it now
+#You might want to change the package name put here
 dpkg --purge --force-all oem-config-feren
+
+#Remove the files if you do not want to use package removal
+rm -rf /usr/bin/feren-oem-prepremove /usr/bin/oem-feren-prepare /usr/share/feren-oem-config/systemd/feren-oem-preparations.service /usr/share/polkit-1/actions/org.feren.oem-setup.prepare.policy
+
+#Mark the main oem-config package as manually installed so the system doesn't accidentally remove it as 'no longer needed'
+#You might want to change this package name too
 apt-get install -y feren-calamares-oem-config
+
+#We're done, just exit with exit code 0
 exit 0

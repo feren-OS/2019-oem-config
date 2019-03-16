@@ -1,18 +1,26 @@
 #!/bin/bash
 
+#Check for Superuser Privilleges
 if [ ! "$(whoami)" = "root" ]; then
     echo "You must run this command as superuser."
     exit 0
 fi
 
+#Install the main OEM Config / OEM Setup package and Calamares
+#You might want to change the packages mentioned here, as well as the APT command depending on the OS
 apt install feren-calamares-oem-config calamares -y | zenity --progress --pulsate --title="Feren OS" --text="Installing OEM Config requirement packages..." --no-cancel --auto-close
+#If there isn't the feren-oem-session command brought by installing that package, let's assume it failed
 if [ ! -f /usr/bin/feren-oem-session ]; then
     zenity --error --title="Feren OS" --text="We could not install extra required packages for preparing for OEM Setup, aborting."
     exit 1
 fi
+#Install and enable the feren-oem-config SystemD Service
 cp -f /usr/share/feren-oem-config/systemd/feren-oem-config.service /etc/systemd/system/feren-oem-config.service && systemctl enable feren-oem-config.service | zenity --progress --pulsate --title="Feren OS" --text="Scheduling OEM Config to run on next boot..." --no-cancel --auto-close
+#Install and enable the feren-oem-preparations SystemD Service
 cp -f /usr/share/feren-oem-config/systemd/feren-oem-preparations.service /etc/systemd/system/feren-oem-preparations.service && systemctl enable feren-oem-preparations.service | zenity --progress --pulsate --title="Feren OS" --text="Scheduling OEM Config to run on next boot..." --no-cancel --auto-close
+#Successfully enabled OEM Config, let's tell the user
 zenity --info --title="Feren OS" --text="OEM Config will run on the next boot.
 
 Please note that user 'oem' will be completely deleted on the next startup." --no-wrap
 
+#Done
