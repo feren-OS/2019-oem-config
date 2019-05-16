@@ -1,6 +1,7 @@
 #!/bin/bash
 
 #Completely remove the OEM Configs User
+killall --user oem
 deluser oem
 rm -rf /home/oem
 
@@ -9,11 +10,27 @@ rm -rf /home/oem
 dpkg --purge --force-all oem-config-feren
 
 #Remove the files if you do not want to use package removal
-rm -rf /usr/bin/feren-oem-prepremove /usr/bin/oem-feren-prepare /usr/share/feren-oem-config/systemd/feren-oem-preparations.service /usr/share/polkit-1/actions/org.feren.oem-setup.prepare.policy
+rm -f /usr/bin/feren-oem-prepremove /usr/bin/oem-feren-prepare /usr/share/feren-oem-config/systemd/feren-oem-preparations.service /usr/share/polkit-1/actions/org.feren.oem-setup.prepare.policy
 
 #Mark the main oem-config package as manually installed so the system doesn't accidentally remove it as 'no longer needed'
-#You might want to change this package name too
-apt-get install -y feren-calamares-oem-config
+#You might want to change this package name set too
+apt-get install -y calamares-settings-feren-oem calamares-branding-feren feren-calamares-global-settings
+
+#Restrict Automatic Updates from unattended-upgrades to just Security Updates
+mv -f /etc/apt/apt.conf.d/50unattended-upgrades /50unattended-upgrades.bak
+echo '// Automatically upgrade packages from these (origin:archive) pairs
+Unattended-Upgrade::Allowed-Origins {
+	"Ubuntu:'"$(cat /etc/feren-os-base)"'-security";
+};
+
+// List of packages to not update (regexp are supported)
+Unattended-Upgrade::Package-Blacklist {
+//	"vim";
+};
+
+// Automatically reboot *WITHOUT CONFIRMATION*
+//  if the file /var/run/reboot-required is found after the upgrade 
+Unattended-Upgrade::Automatic-Reboot "false";' > /etc/apt/apt.conf.d/50unattended-upgrades
 
 #We're done, just exit with exit code 0
 exit 0
